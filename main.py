@@ -25,6 +25,11 @@ HENTAIVN = 'http://hentaivn.net'
 
 lenArgv = 2
 
+def zipFile(zipf, files):
+	for file in files:
+		zipf.write(file)
+		os.remove(file)	
+
 def saveImgFromBlogTruyen(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
@@ -47,9 +52,7 @@ def saveImgFromBlogTruyen(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	zipf = zipfile.ZipFile(filename + '-' + "blogtruyen.com" + '.zip', 'w', zipfile.ZIP_DEFLATED)
 	print('Zipping...')
-	for file in files:
-		zipf.write(file)
-		os.remove(file)
+	zipFile(zipf, files)
 	zipf.close()
 	print('Done!')
 
@@ -77,9 +80,7 @@ def saveImgFromTruyenTranhTuan(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	zipf = zipfile.ZipFile(filename + '-' + "truyentranhtuan.com" + '.zip', 'w', zipfile.ZIP_DEFLATED)
 	print('Zipping...')
-	for file in files:
-		zipf.write(file)
-		os.remove(file)
+	zipFile(zipf, files)
 	zipf.close()
 	print('Done!')
 
@@ -108,9 +109,7 @@ def saveImgFromMangaPanda(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	zipf = zipfile.ZipFile(filename + '-' + "mangapanda.com" + '.zip', 'w', zipfile.ZIP_DEFLATED)
 	print('Zipping...')
-	for file in files:
-		zipf.write(file)
-		os.remove(file)
+	zipFile(zipf, files)
 	zipf.close()
 	print('Done!')
 
@@ -135,9 +134,7 @@ def saveImgFromHentaiVn(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	zipf = zipfile.ZipFile(filename + '-' + "hentaivn.net" + '.zip', 'w', zipfile.ZIP_DEFLATED)
 	print('Zipping...')
-	for file in files:
-		zipf.write(file)
-		os.remove(file)
+	zipFile(zipf, files)
 	zipf.close()
 	print('Done!')
 
