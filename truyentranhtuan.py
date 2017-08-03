@@ -1,9 +1,8 @@
 from requests import get as requestsGet
 from re import search as reSearch
-import urllib.request as download
 from bs4 import BeautifulSoup as besoup
 
-import zipfiles
+import filehandle
 
 hostname = 'http://truyentranhtuan.com/'
 
@@ -45,7 +44,9 @@ def saveImgFromTruyenTranhTuan(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(download.urlretrieve(link, name)[0])
+			a = filehandle.downloadFile(link, name)
+			print(a)
+			files.append(a)
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -53,5 +54,5 @@ def saveImgFromTruyenTranhTuan(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	zipfiles.zipFile(filename + '-' + "truyentranhtuan.com" + '.zip', files)
+	filehandle.zipFile(files, filename + '-' + "truyentranhtuan.com" + '.zip')
 	print('Done!')

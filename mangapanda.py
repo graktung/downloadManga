@@ -1,8 +1,7 @@
 from requests import get as requestsGet
-import urllib.request as download
 from bs4 import BeautifulSoup as besoup
 
-import zipfiles
+import filehandle
 
 hostname = 'http://www.mangapanda.com'
 
@@ -39,14 +38,14 @@ def saveImgFromMangaPanda(data):
 	print('{}\nDownloading...'.format('-' * 50))
 	for no in range(1, num + 1):
 		# get each image from each url
-		html = requests.get(data['href'] + '/' + str(no)).text
+		html = requestsGet(data['href'] + '/' + str(no)).text
 		source = besoup(html, 'lxml')
 		link = source.find(id='img')['src']
 		fileExtension = link.split('.')[-1]
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(download.urlretrieve(link, name)[0])
+			files.append(filehandle.downloadFile(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -54,5 +53,5 @@ def saveImgFromMangaPanda(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	zipfiles.zipFile(filename + '-' + "mangapanda.com" + '.zip', files)
+	filehandle.zipFile(files, filename + '-' + "mangapanda.com" + '.zip')
 	print('Done!')

@@ -1,8 +1,7 @@
 from requests import get as requestsGet
-import urllib.request as download
 from bs4 import BeautifulSoup as besoup
 
-import zipfiles
+import filehandle
 
 hostname = 'http://hentaivn.net'
 
@@ -45,7 +44,7 @@ def saveImgFromHentaiVn(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(download.urlretrieve(link, name)[0])
+			files.append(filehandle.downloadFile(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -53,5 +52,5 @@ def saveImgFromHentaiVn(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	zipfiles.zipFile(filename + '-' + "hentaivn.net" + '.zip', files)
+	filehandle.zipFile(files, filename + '-' + "hentaivn.net" + '.zip')
 	print('Done!')

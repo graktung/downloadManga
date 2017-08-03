@@ -1,9 +1,8 @@
 from requests import get as requestsGet
 from re import search as reSearch
-import urllib.request as download
 from bs4 import BeautifulSoup as besoup
 
-import zipfiles
+import filehandle
 
 hostname = 'http://manganel.com'
 
@@ -43,7 +42,7 @@ def saveImgFromManganel(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(download.urlretrieve(link, name)[0])
+			files.append(filehandle.downloadFile(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -51,5 +50,5 @@ def saveImgFromManganel(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	zipfiles.zipFile(filename + '-' + "manganel.com" + '.zip', files)
+	filehandle.zipFile(files, filename + '-' + "manganel.com" + '.zip')
 	print('Done!')
