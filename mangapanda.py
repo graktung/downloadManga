@@ -5,7 +5,7 @@ import filehandle
 
 hostname = 'http://www.mangapanda.com'
 
-def getDataFromMangaPanda(link):
+def get_data_from_mangapanda(link):
 	# get HTML source from original link
 	HTML = requestsGet(link).text
 	# crawl data from source html
@@ -27,7 +27,7 @@ def getDataFromMangaPanda(link):
 		data.append(tempData)
 	return data
 
-def saveImgFromMangaPanda(data):
+def save_img_from_mangapanda(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	# get HTML source from link chap
@@ -45,7 +45,7 @@ def saveImgFromMangaPanda(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(filehandle.downloadFile(link, name))
+			files.append(filehandle.download_file(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -53,5 +53,5 @@ def saveImgFromMangaPanda(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	filehandle.zipFile(files, filename + '-' + "mangapanda.com" + '.zip')
+	filehandle.zip_file(files, filename + '-' + "mangapanda.com" + '.zip')
 	print('Done!')

@@ -6,7 +6,7 @@ import filehandle
 
 hostname = 'http://blogtruyen.com/'
 
-def getDataFromBlogTruyen(link):
+def get_data_from_blog_truyen(link):
 	# get HTML source from original link
 	HTML = requestsGet(link).text
 	# catch the title
@@ -32,7 +32,7 @@ def getDataFromBlogTruyen(link):
 		data.append(tempData)
 	return data
 
-def saveImgFromBlogTruyen(data):
+def save_img_from_blog_truyen(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	# get HTML source from link chap
@@ -47,7 +47,7 @@ def saveImgFromBlogTruyen(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(filehandle.downloadFile(img['src'], name))
+			files.append(filehandle.download_file(img['src'], name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -55,5 +55,5 @@ def saveImgFromBlogTruyen(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	filehandle.zipFile(files, filename + '-' + "blogtruyen.com" + '.zip')
+	filehandle.zip_file(files, filename + '-' + "blogtruyen.com" + '.zip')
 	print('Done!')

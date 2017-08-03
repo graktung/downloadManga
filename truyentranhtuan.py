@@ -6,7 +6,7 @@ import filehandle
 
 hostname = 'http://truyentranhtuan.com/'
 
-def getDataFromTruyenTranhTuan(link):
+def get_data_from_truyentranhtuan(link):
 	# get HTML source from original link
 	HTML = requestsGet(link).text
 	# crawl data from source html
@@ -26,7 +26,7 @@ def getDataFromTruyenTranhTuan(link):
 		data.append(tempData)
 	return data
 
-def saveImgFromTruyenTranhTuan(data):
+def save_img_from_truyentranhtuan(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	# get HTML source from link chap
@@ -44,9 +44,7 @@ def saveImgFromTruyenTranhTuan(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			a = filehandle.downloadFile(link, name)
-			print(a)
-			files.append(a)
+			files.append(filehandle.download_file(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -54,5 +52,5 @@ def saveImgFromTruyenTranhTuan(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	filehandle.zipFile(files, filename + '-' + "truyentranhtuan.com" + '.zip')
+	filehandle.zip_file(files, filename + '-' + "truyentranhtuan.com" + '.zip')
 	print('Done!')

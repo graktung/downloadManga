@@ -2,14 +2,14 @@ import zipfile
 import os
 from requests import get as requestsGet
 
-def zipFile(files, filename):
+def zip_file(files, filename):
 	zipf = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
 	for file in files:
 		zipf.write(file)
 		os.remove(file)	
 	zipf.close()
 
-def downloadFile(url, filename):
+def download_file(url, filename):
 	req = requestsGet(url, stream=True)
 	with open(filename, 'wb') as f:
 		for chunk in req.iter_content(chunk_size=1024): 

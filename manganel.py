@@ -6,7 +6,7 @@ import filehandle
 
 hostname = 'http://manganel.com'
 
-def getDataFromManganel(link):
+def get_data_from_manganel(link):
 	# get HTML source from original link
 	HTML = requestsGet(link).text
 	# crawl
@@ -28,7 +28,7 @@ def getDataFromManganel(link):
 		data.append(tempData)
 	return data
 
-def saveImgFromManganel(data):
+def save_img_from_manganel(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	# get HTML source from link chap
@@ -42,7 +42,7 @@ def saveImgFromManganel(data):
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(filehandle.downloadFile(link, name))
+			files.append(filehandle.download_file(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -50,5 +50,5 @@ def saveImgFromManganel(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	filehandle.zipFile(files, filename + '-' + "manganel.com" + '.zip')
+	filehandle.zip_file(files, filename + '-' + "manganel.com" + '.zip')
 	print('Done!')
