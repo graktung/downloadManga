@@ -8,12 +8,16 @@ import zipfiles
 hostname = 'http://truyentranhtuan.com/'
 
 def getDataFromTruyenTranhTuan(link):
+	# get HTML source from original link
 	HTML = requestsGet(link).text
+	# crawl data from source html
 	source = besoup(HTML, 'lxml')
+	# catch the title
 	title = source.find('title').text.split('-')[0].strip()
 	chapters = source.find_all('span', class_='chapter-name')
 	num = len(chapters)
 	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
+	# handle data for return
 	data = []
 	for chap in chapters:
 		tempData = {}
@@ -26,7 +30,9 @@ def getDataFromTruyenTranhTuan(link):
 def saveImgFromTruyenTranhTuan(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
+	# get HTML source from link chap
 	HTML = requestsGet(data['href']).text
+	# get all link img from javascript variable.
 	regex = r'var slides_page_url_path.+;'
 	m = reSearch(regex, HTML)
 	regex = r'".+"'
@@ -38,6 +44,7 @@ def saveImgFromTruyenTranhTuan(data):
 		fileExtension = link.split('?')[0].split('.')[-1]
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
+			# download file and get filename
 			files.append(download.urlretrieve(link, name)[0])
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
@@ -45,5 +52,6 @@ def saveImgFromTruyenTranhTuan(data):
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
+	# zip all files and remove them
 	zipfiles.zipFile(filename + '-' + "truyentranhtuan.com" + '.zip', files)
 	print('Done!')

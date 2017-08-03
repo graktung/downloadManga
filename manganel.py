@@ -5,50 +5,45 @@ from bs4 import BeautifulSoup as besoup
 
 import zipfiles
 
-hostname = 'http://blogtruyen.com/'
+hostname = 'http://manganel.com'
 
-def getDataFromBlogTruyen(link):
+def getDataFromManganel(link):
 	# get HTML source from original link
 	HTML = requestsGet(link).text
-	# catch the title
-	regexTitle = r'<title>.+\|'
-	matchTitle = reSearch(regexTitle, HTML)
-	if matchTitle.group() is not None:
-		title = matchTitle.group().replace('<title>', '').rstrip('|').rstrip()
-	else:
-		title = 'Unknown'
-	# crawl data from source html
-	divListChapter = besoup(HTML, 'lxml')
-	chapters = divListChapter.find(id='list-chapters')
-	chapters = chapters.find_all('p')
+	# crawl
+	source = besoup(HTML, 'lxml')
+	# catch the title content
+	title = source.find('title').text.split('Manga')[0].split('Read')[1].strip()
+	# find chapter-list then find all a tag
+	chapters = source.find(class_='chapter-list').find_all('a')
+	# the number of chap
 	num = len(chapters)
 	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
 	# handle data for return
 	data = []
 	for chap in chapters:
 		tempData = {}
-		temp = chap.find('a')
-		tempData['href'] = hostname + temp['href']
-		tempData['title'] = temp['title']
+		tempData['href'] = chap['href']
+		tempData['title'] = chap.contents[0]
+		# each item in data is a dict with 2 keys: 'title' and 'href'
 		data.append(tempData)
 	return data
 
-def saveImgFromBlogTruyen(data):
+def saveImgFromManganel(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	# get HTML source from link chap
 	HTML = requestsGet(data['href']).text
 	source = besoup(HTML, 'lxml')
-	article = source.find(id='content')
-	imgs = article.find_all('img')
+	links = map(lambda x: x['src'], source.find(id='vungdoc').find_all('img'))
 	files = []
 	print('{}\nDownloading...'.format('-' * 50))
-	for no, img in enumerate(imgs):
-		fileExtension = img['src'].split('?')[0].split('.')[-1]
+	for no, link in enumerate(links, 1):
+		fileExtension = link.split('.')[-1]
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
 			# download file and get filename
-			files.append(download.urlretrieve(img['src'], name)[0])
+			files.append(download.urlretrieve(link, name)[0])
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
 			exit()
@@ -56,5 +51,5 @@ def saveImgFromBlogTruyen(data):
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
 	# zip all files and remove them
-	zipfiles.zipFile(filename + '-' + "blogtruyen.com" + '.zip', files)
+	zipfiles.zipFile(filename + '-' + "manganel.com" + '.zip', files)
 	print('Done!')

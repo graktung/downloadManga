@@ -4,6 +4,7 @@ SUPPORT
 - http://truyentranhtuan.com/
 - http://www.mangapanda.com/
 - http://hentaivn.net/
+- http://manganel.com/
 '''
 
 #get link from command. Not require
@@ -14,11 +15,13 @@ import blogtruyen
 import truyentranhtuan
 import mangapanda
 import hentaivn
+import manganel
 
 BLOGTRUYEN = 'http://blogtruyen.com/'
 TRUYENTRANHTUAN = 'http://truyentranhtuan.com/'
 MANGAPANDA = 'http://www.mangapanda.com'
 HENTAIVN = 'http://hentaivn.net'
+MANGANEL = 'http://manganel.com'
 
 # scriptname and link
 lenArgv = 2
@@ -64,6 +67,17 @@ def handleLink(link):
 			if askDown.lower().strip() in ('y', 'yes'):
 				for d in data:
 					hentaivn.saveImgFromHentaiVn(d)
+			# notification done
+			print('\a')
+		except:
+			exit()
+	elif link.startswith(MANGANEL):
+		try:
+			data = manganel.getDataFromManganel(link)
+			askDown = input('Download (y/n) ')
+			if askDown.lower().strip() in ('y', 'yes'):
+				for d in data:
+					manganel.saveImgFromManganel(d)
 			# notification done
 			print('\a')
 		except:
