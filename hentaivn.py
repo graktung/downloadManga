@@ -1,4 +1,4 @@
-from requests import get as requestsGet
+from requests import get as requests_get
 from bs4 import BeautifulSoup as besoup
 
 import filehandle
@@ -6,18 +6,12 @@ import filehandle
 hostname = 'http://hentaivn.net'
 
 def get_data_from_hentaivn(link):
-	# get HTML source from original link
-	HTML = requestsGet(link).text
-	# crawl data from source html
+	HTML = requests_get(link).text
 	source = besoup(HTML, 'lxml')
-	# get the title's content
 	title = source.find('title').text.split('[')[0].split(':')[1].strip()
-	# find all chapters
 	chapters =  source.find(class_='listing').find_all('a')
-	# the number of chaps
 	num = len(chapters)
 	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
-	# handle data for return
 	data = []
 	for chap in chapters:
 		tempData = {}
@@ -26,15 +20,13 @@ def get_data_from_hentaivn(link):
 			continue
 		tempData['href'] = hostname + chap['href']
 		tempData['title'] = title['title']
-		# each item in data is a dict with 2 keys: 'title' and 'href'
 		data.append(tempData)
 	return data
 
 def save_img_from_hentaivn(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
-	# get HTML source from link chap
-	HTML = requestsGet(data['href']).text
+	HTML = requests_get(data['href']).text
 	source = besoup(HTML, 'lxml')
 	links = map(lambda x: x['src'].split('?')[0], source.find(id='image').find_all('img'))
 	files = []
@@ -43,7 +35,6 @@ def save_img_from_hentaivn(data):
 		fileExtension = link.split('.')[-1]
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
-			# download file and get filename
 			files.append(filehandle.download_file(link, name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
@@ -51,6 +42,5 @@ def save_img_from_hentaivn(data):
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
-	# zip all files and remove them
 	filehandle.zip_file(files, filename + '-' + "hentaivn.net" + '.zip')
 	print('Done!')

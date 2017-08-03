@@ -1,6 +1,6 @@
 import zipfile
 import os
-from requests import get as requestsGet
+from requests import get as requests_get
 
 def zip_file(files, filename):
 	zipf = zipfile.ZipFile(filename, 'w', zipfile.ZIP_DEFLATED)
@@ -10,9 +10,9 @@ def zip_file(files, filename):
 	zipf.close()
 
 def download_file(url, filename):
-	req = requestsGet(url, stream=True)
+	req = requests_get(url, stream=True)
 	with open(filename, 'wb') as f:
 		for chunk in req.iter_content(chunk_size=1024): 
-			if chunk: # filter out keep-alive new chunks
+			if chunk:
 				f.write(chunk)
 	return filename

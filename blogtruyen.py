@@ -1,5 +1,5 @@
-from requests import get as requestsGet
-from re import search as reSearch
+from requests import get as requests_get
+from re import search as re_search
 from bs4 import BeautifulSoup as besoup
 
 import filehandle
@@ -7,22 +7,18 @@ import filehandle
 hostname = 'http://blogtruyen.com/'
 
 def get_data_from_blog_truyen(link):
-	# get HTML source from original link
-	HTML = requestsGet(link).text
-	# catch the title
+	HTML = requests_get(link).text
 	regexTitle = r'<title>.+\|'
-	matchTitle = reSearch(regexTitle, HTML)
+	matchTitle = re_search(regexTitle, HTML)
 	if matchTitle.group() is not None:
 		title = matchTitle.group().replace('<title>', '').rstrip('|').rstrip()
 	else:
 		title = 'Unknown'
-	# crawl data from source html
 	divListChapter = besoup(HTML, 'lxml')
 	chapters = divListChapter.find(id='list-chapters')
 	chapters = chapters.find_all('p')
 	num = len(chapters)
 	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
-	# handle data for return
 	data = []
 	for chap in chapters:
 		tempData = {}
@@ -35,8 +31,7 @@ def get_data_from_blog_truyen(link):
 def save_img_from_blog_truyen(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
-	# get HTML source from link chap
-	HTML = requestsGet(data['href']).text
+	HTML = requests_get(data['href']).text
 	source = besoup(HTML, 'lxml')
 	article = source.find(id='content')
 	imgs = article.find_all('img')
@@ -46,7 +41,6 @@ def save_img_from_blog_truyen(data):
 		fileExtension = img['src'].split('?')[0].split('.')[-1]
 		try:
 			name = filename + '-' + str(no) + '.' + fileExtension
-			# download file and get filename
 			files.append(filehandle.download_file(img['src'], name))
 			print('Loaded', name, 'Successfully!')
 		except KeyboardInterrupt:
@@ -54,6 +48,5 @@ def save_img_from_blog_truyen(data):
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
 	print('Zipping...')
-	# zip all files and remove them
 	filehandle.zip_file(files, filename + '-' + "blogtruyen.com" + '.zip')
 	print('Done!')

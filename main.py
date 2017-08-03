@@ -5,23 +5,25 @@ SUPPORT
 - http://www.mangapanda.com/
 - http://hentaivn.net/
 - http://manganel.com/
+- http://truyentranh8.net/
 '''
 
 #get link from command. Not require
 from sys import argv
 
-# each module has its own website
 import blogtruyen
 import truyentranhtuan
 import mangapanda
 import hentaivn
 import manganel
+import truyentranh8
 
 BLOGTRUYEN = 'http://blogtruyen.com/'
 TRUYENTRANHTUAN = 'http://truyentranhtuan.com/'
 MANGAPANDA = 'http://www.mangapanda.com'
 HENTAIVN = 'http://hentaivn.net'
 MANGANEL = 'http://manganel.com'
+TRUYENTRANH8 = 'http://truyentranh8.net/'
 
 # scriptname and link
 lenArgv = 2
@@ -78,6 +80,17 @@ def handle_link(link):
 			if askDown.lower().strip() in ('y', 'yes'):
 				for d in data:
 					manganel.save_img_from_manganel(d)
+			# notification done
+			print('\a')
+		except:
+			exit()
+	elif link.startswith(TRUYENTRANH8):
+		try:
+			data = truyentranh8.get_data_from_truyentranh8(link)
+			askDown = input('Download (y/n) ')
+			if askDown.lower().strip() in ('y', 'yes'):
+				for d in data:
+					truyentranh8.save_img_from_truyentranh8(d)
 			# notification done
 			print('\a')
 		except:
