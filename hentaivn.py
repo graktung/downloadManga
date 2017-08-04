@@ -5,7 +5,7 @@ import filehandle
 
 hostname = 'http://hentaivn.net'
 
-def get_data_from_hentaivn(link):
+def get_data(link):
 	HTML = requests_get(link).text
 	source = besoup(HTML, 'lxml')
 	title = source.find('title').text.split('[')[0].split(':')[1].strip()
@@ -23,7 +23,7 @@ def get_data_from_hentaivn(link):
 		data.append(tempData)
 	return data
 
-def save_img_from_hentaivn(data):
+def save_img(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	HTML = requests_get(data['href']).text

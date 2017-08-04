@@ -8,103 +8,125 @@ SUPPORT
 - http://truyentranh8.net/
 '''
 
-#get link from command. Not require
+from os import system
+# get link from command and download immediately. Not require
 from sys import argv
 
-import blogtruyen
-import truyentranhtuan
-import mangapanda
-import hentaivn
-import manganel
-import truyentranh8
+SUPPORT_WEBSITES_DOWNLOAD = [
+	{'domain': 'http://blogtruyen.com/', 'module': 'blogtruyen'},
+	{'domain': 'http://truyentranhtuan.com/', 'module': 'truyentranhtuan'},
+	{'domain': 'http://www.mangapanda.com', 'module': 'mangapanda'},
+	{'domain': 'http://hentaivn.net', 'module': 'hentaivn'},
+	{'domain': 'http://manganel.com', 'module': 'manganel'},
+	{'domain': 'http://truyentranh8.net/', 'module': 'truyentranh8'}
+]
 
-BLOGTRUYEN = 'http://blogtruyen.com/'
-TRUYENTRANHTUAN = 'http://truyentranhtuan.com/'
-MANGAPANDA = 'http://www.mangapanda.com'
-HENTAIVN = 'http://hentaivn.net'
-MANGANEL = 'http://manganel.com'
-TRUYENTRANH8 = 'http://truyentranh8.net/'
+SUPPORT_WEBSITES_SEARCH = [
+	{'domain': 'http://manganel.com', 'module': 'manganel'}
+]
 
 # scriptname and link
 lenArgv = 2
 
-def handle_link(link):
-	if link.startswith(BLOGTRUYEN):
+def get_and_down(moduleDownload, link):
+	try:
+		data = moduleDownload.get_data(link)
+		askDown = input('Download (y/n) ')
+		if askDown.lower().strip() in ('y', 'yes'):
+			n = input('How many? ')
+			if not n.isdigit() or n.lower().strip() == ('all'):
+				n = None
+			else:
+				n = int(n)
+			for d in data[:n]:
+				moduleDownload.save_img(d)
+		# notification done
+		print('\a')
+	except:
+		exit()
+
+def handle_link_download(link):
+	for site in SUPPORT_WEBSITES_DOWNLOAD:
+		if site['domain'] in link:
+			moduleDownload = __import__(site['module'])
+			get_and_down(moduleDownload, link)
+			break
+
+def handle_search(keyword, n):
+	data = []
+	for site in SUPPORT_WEBSITES_SEARCH:
+		data.append(__import__(site['module']).search(keyword, n))
+	if len(data) == 0:
+		print('No results found from keyword %r' %keyword)
+		return None
+	for d in data:
+		print('Enter to continue, Ctrl + C to stop')
 		try:
-			data = blogtruyen.get_data_from_blog_truyen(link)
-			askDown = input('Download (y/n) ')
-			if askDown.lower().strip() in ('y', 'yes'):
-				for d in data:
-					blogtruyen.save_img_from_blog_truyen(d)
-			# notification done
-			print('\a')
-		except:
-			exit()
-	elif link.startswith(TRUYENTRANHTUAN):
-		try:
-			data = truyentranhtuan.get_data_from_truyentranhtuan(link)
-			askDown = input('Download (y/n) ')
-			if askDown.lower().strip() in ('y', 'yes'):
-				for d in data:
-					truyentranhtuan.save_img_from_truyentranhtuan(d)
-			# notification done
-			print('\a')
-		except:
-			exit()
-	elif link.startswith(MANGAPANDA):
-		try:
-			data = mangapanda.get_data_from_mangapanda(link)
-			askDown = input('Download (y/n) ')
-			if askDown.lower().strip() in ('y', 'yes'):
-				for d in data:
-					mangapanda.save_img_from_mangapanda(d)
-			# notification done
-			print('\a')
-		except:
-			exit()
-	elif link.startswith(HENTAIVN):
-		try:
-			data = hentaivn.get_data_from_hentaivn(link)
-			askDown = input('Download (y/n) ')
-			if askDown.lower().strip() in ('y', 'yes'):
-				for d in data:
-					hentaivn.save_img_from_hentaivn(d)
-			# notification done
-			print('\a')
-		except:
-			exit()
-	elif link.startswith(MANGANEL):
-		try:
-			data = manganel.get_data_from_manganel(link)
-			askDown = input('Download (y/n) ')
-			if askDown.lower().strip() in ('y', 'yes'):
-				for d in data:
-					manganel.save_img_from_manganel(d)
-			# notification done
-			print('\a')
-		except:
-			exit()
-	elif link.startswith(TRUYENTRANH8):
-		try:
-			data = truyentranh8.get_data_from_truyentranh8(link)
-			askDown = input('Download (y/n) ')
-			if askDown.lower().strip() in ('y', 'yes'):
-				for d in data:
-					truyentranh8.save_img_from_truyentranh8(d)
-			# notification done
-			print('\a')
-		except:
-			exit()
+			print('=' * 50, '\n')
+			print('Web:' + d[0] + '\n')
+			for f in d[1:]:
+				print('-' * 50)
+				print('Name:', f[0]['title'], '\nLatest:', f[1]['title'])
+				print('+' * 50)
+				print('Chap:       ', f[0]['href'])
+				print('Latest chap:', f[1]['href'])
+				try:
+					input()
+				except KeyboardInterrupt:
+					print()
+					break
+			input()
+		except KeyboardInterrupt:
+			print()
+			break
+
+def load_only(link):
+	try:
+		for site in SUPPORT_WEBSITES_DOWNLOAD:
+			if site['domain'] in link:
+				moduleDownload = __import__(site['module'])
+				moduleDownload.save_img({'title': site['module'],\
+										'href': link})
+				break
+		print('\a')
+	except:
+		exit()
+
+def read_command():
+	command = ''
+	while command == '':
+		command = input('=]] ').lower().strip()
+	return command
+
+def decide(command):
+	if command in ('load', 'download', 'down'):
+		link = input('Link: ')
+		# go to check the link
+		handle_link_download(link)
+	elif command in ('load only'):
+		link = input('Link: ')
+		load_only(link)
+	elif command in ('search', 'serch', 'sarch'):
+		key = input('Keyword: ')
+		nResult = input('Which maximum results do u wanna display: ')
+		if not nResult.isdigit() or nResult.lower().strip() == ('all'):
+			nResult = None
+		else:
+			nResult = int(nResult)
+		handle_search(key, nResult)
+	elif command in ('cls', 'clear', 'cear'):
+		system('cls')
+	elif command in ('quit', 'q', 'exit'):
+		exit()
 
 def main():
 	# if get link from argv
 	if lenArgv == len(argv):
 		link = argv[1]
-	# else require from input
 	else:
-		link = input('Link: ')
-	# go to check the link
-	handle_link(link)
+		while 1:
+			command = read_command()
+			decide(command)
 
 if __name__ == '__main__':
 	main()

@@ -6,7 +6,7 @@ import filehandle
 
 hostname = 'http://blogtruyen.com/'
 
-def get_data_from_blog_truyen(link):
+def get_data(link):
 	HTML = requests_get(link).text
 	regexTitle = r'<title>.+\|'
 	matchTitle = re_search(regexTitle, HTML)
@@ -28,7 +28,7 @@ def get_data_from_blog_truyen(link):
 		data.append(tempData)
 	return data
 
-def save_img_from_blog_truyen(data):
+def save_img(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	HTML = requests_get(data['href']).text

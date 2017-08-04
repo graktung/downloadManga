@@ -1,15 +1,16 @@
 from requests import get as requests_get
-from re import search as re_search
+from re import search as re_search, findall as find_all
 from bs4 import BeautifulSoup as besoup
 
 import filehandle
 
 hostname = 'http://manganel.com'
+linkSearch = 'http://manganel.com/search/'
 
-def get_data_from_manganel(link):
+def get_data(link):
 	HTML = requests_get(link).text
 	source = besoup(HTML, 'lxml')
-	title = source.find('title').text.split('Manga')[0].split('Read')[1].strip()
+	title = source.find('title').text.split('Manga')[0].replace('Read', '').strip()
 	chapters = source.find(class_='chapter-list').find_all('a')
 	num = len(chapters)
 	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
@@ -21,7 +22,7 @@ def get_data_from_manganel(link):
 		data.append(tempData)
 	return data
 
-def save_img_from_manganel(data):
+def save_img(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	HTML = requests_get(data['href']).text
@@ -42,3 +43,15 @@ def save_img_from_manganel(data):
 	print('Zipping...')
 	filehandle.zip_file(files, filename + '-' + "manganel.com" + '.zip')
 	print('Done!')
+
+def search(keyword, num):
+	regexKeyword = r'\w+'
+	key = '_'.join(find_all(regexKeyword, keyword))
+	HTML = requests_get(linkSearch + key).text
+	source = besoup(HTML, 'lxml')
+	results = source.find_all(class_='daily-update-item')[:num]
+	results = map(lambda x: x.find_all('a'), results)
+	results = [hostname] + list(map(lambda x: [{'title': x[0].text, 'href': x[0]['href']}\
+								, {'title': x[1].text, 'href': x[1]['href']}],\
+								results))
+	return results

@@ -7,7 +7,19 @@ import filehandle
 
 hostname = 'http://truyentranh8.net/'
 
-def get_data_from_truyentranh8(link):
+def getInt(link):
+	name = link.split('/')[-1].split('-')[-1].split('.')[0]
+	n = ''
+	for letter in n[::-1]:
+		if letter.isdigit():
+			n += letter
+		else:
+			break
+	if n != '':
+		return n[::-1]
+	return 1
+
+def get_data(link):
 	HTML = requests_get(link).text
 	source = besoup(HTML, 'lxml')
 	title = source.find('title').contents[0].split('(')[0].strip()
@@ -32,10 +44,9 @@ def get_link_img(html):
 	jsUnEval = beautify(jsEval.group())
 	listLink = map(lambda x: x.rstrip('"').split('?')[0], \
 		re_findall(regexLink, jsUnEval))
-	return sorted((set(listLink)), key=lambda x: int(x.split('/')[-1]\
-		.split('-')[-1].split('.')[0]))
+	return sorted((set(listLink)), key=lambda x: int(getInt(x)))
 
-def save_img_from_truyentranh8(data):
+def save_img(data):
 	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	HTML = requests_get(data['href']).text
