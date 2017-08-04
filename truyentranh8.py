@@ -6,6 +6,7 @@ from jsbeautifier import beautify
 import filehandle
 
 hostname = 'http://truyentranh8.net/'
+linkSearch = 'http://truyentranh8.net/search.php?act=timnangcao&q='
 
 def getInt(link):
 	name = link.split('/')[-1].split('-')[-1].split('.')[0]
@@ -66,3 +67,17 @@ def save_img(data):
 	print('Zipping...')
 	filehandle.zip_file(files, filename + '-' + "manganel.com" + '.zip')
 	print('Done!')
+
+def search(keyword, num):
+	regexKeyword = r'\w+'
+	key = '+'.join(re_findall(regexKeyword, keyword))
+	HTML = requests_get(linkSearch + key).text
+	source = besoup(HTML, 'lxml')
+	body = source.find('tbody')
+	results = body.find_all('tr')[:num]
+	results = map(lambda x: [x.find(class_='tipsy'), \
+							x.find(class_='cluetip')], results)
+	results = [hostname] + list(map(lambda x: [{'title': x[0].text, 'href': x[0]['href']}\
+								, {'title': x[1].text, 'href': x[1]['href']}],\
+								results))
+	return results

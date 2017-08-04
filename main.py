@@ -22,7 +22,8 @@ SUPPORT_WEBSITES_DOWNLOAD = [
 ]
 
 SUPPORT_WEBSITES_SEARCH = [
-	{'domain': 'http://manganel.com', 'module': 'manganel'}
+	{'domain': 'http://manganel.com', 'module': 'manganel'},
+	{'domain': 'http://truyentranh8.net/', 'module': 'truyentranh8'}
 ]
 
 # scriptname and link

@@ -1,5 +1,5 @@
 from requests import get as requests_get
-from re import search as re_search, findall as find_all
+from re import search as re_search, findall as re_findall
 from bs4 import BeautifulSoup as besoup
 
 import filehandle
@@ -46,7 +46,7 @@ def save_img(data):
 
 def search(keyword, num):
 	regexKeyword = r'\w+'
-	key = '_'.join(find_all(regexKeyword, keyword))
+	key = '_'.join(re_findall(regexKeyword, keyword))
 	HTML = requests_get(linkSearch + key).text
 	source = besoup(HTML, 'lxml')
 	results = source.find_all(class_='daily-update-item')[:num]
