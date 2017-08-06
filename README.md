@@ -17,7 +17,7 @@ Download and run `setup.py` following this command line
 python setup.py install
 ```
 * requests
- * Install
+  * Install
 ```
 pip install requests
 ```
