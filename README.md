@@ -23,7 +23,6 @@ python setup.py install
 * os
 * threading
 ## Websites Support
----
 ### Websites Supơort Download
 * [http://blogtruyen.com/](http://blogtruyen.com/)
 * [http://truyentranhtuan.com/](http://truyentranhtuan.com/)
