@@ -32,7 +32,7 @@ def save_img(data):
 	m = re_search(regex, m.group())
 	links = map(lambda x: x.strip('"'), m.group().split(','))
 	files = []
-	print('{}\nDownloading...'.format('-' * 50))
+	print('{}\n{} is downloading...'.format('-' * 50, filename))
 	for no, link in enumerate(links, 1):
 		fileExtension = link.split('?')[0].split('.')[-1]
 		try:
@@ -43,6 +43,6 @@ def save_img(data):
 			exit()
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print('Zipping...')
+	print(filename, 'is zipping...')
 	filehandle.zip_file(files, filename + '-' + "truyentranhtuan.com" + '.zip')
-	print('Done!')
+	print(filename, 'is done!')

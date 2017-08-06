@@ -27,7 +27,7 @@ def save_img(data):
 	source = besoup(HTML, 'lxml')
 	num = len(source.find(id='pageMenu').find_all('option'))
 	files = []
-	print('{}\nDownloading...'.format('-' * 50))
+	print('{}\n{} is downloading...'.format('-' * 50, filename))
 	for no in range(1, num + 1):
 		html = requests_get(data['href'] + '/' + str(no)).text
 		source = besoup(html, 'lxml')
@@ -41,6 +41,6 @@ def save_img(data):
 			exit()
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print('Zipping...')
+	print(filename, 'is zipping...')
 	filehandle.zip_file(files, filename + '-' + "mangapanda.com" + '.zip')
-	print('Done!')
+	print(filename, 'is done!')

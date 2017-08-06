@@ -53,7 +53,7 @@ def save_img(data):
 	HTML = requests_get(data['href']).text
 	links = get_link_img(HTML)
 	files = []
-	print('{}\nDownloading...'.format('-' * 50))
+	print('{}\n{} is downloading...'.format('-' * 50, filename))
 	for no, link in enumerate(links, 1):
 		fileExtension = link.split('.')[-1]
 		try:
@@ -64,9 +64,9 @@ def save_img(data):
 			exit()
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print('Zipping...')
+	print(filename, 'is zipping...')
 	filehandle.zip_file(files, filename + '-' + "manganel.com" + '.zip')
-	print('Done!')
+	print(filename, 'is done!')
 
 def search(keyword, num):
 	regexKeyword = r'\w+'

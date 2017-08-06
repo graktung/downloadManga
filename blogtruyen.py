@@ -36,7 +36,7 @@ def save_img(data):
 	article = source.find(id='content')
 	imgs = article.find_all('img')
 	files = []
-	print('{}\nDownloading...'.format('-' * 50))
+	print('{}\n{} is downloading...'.format('-' * 50, filename))
 	for no, img in enumerate(imgs):
 		fileExtension = img['src'].split('?')[0].split('.')[-1]
 		try:
@@ -47,6 +47,6 @@ def save_img(data):
 			exit()
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print('Zipping...')
+	print(filename, 'is zipping...')
 	filehandle.zip_file(files, filename + '-' + "blogtruyen.com" + '.zip')
-	print('Done!')
+	print(filename, 'is done!')
