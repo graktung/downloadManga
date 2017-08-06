@@ -16,8 +16,12 @@ Download and run `setup.py` following this command line
 ```
 python setup.py install
 ```
-### Others Modules
 * requests
+ * Install
+```
+pip install requests
+```
+### Others Modules
 * re
 * zipfile
 * os
