@@ -24,13 +24,12 @@ def get_data(link):
 	return data
 
 def save_img(data):
-	print('Title:', data['title'], '\nLink:', data['href'])
 	filename = '-'.join(data['title'].split())
 	HTML = requests_get(data['href']).text
 	source = besoup(HTML, 'lxml')
 	links = map(lambda x: x['src'].split('?')[0], source.find(id='image').find_all('img'))
 	files = []
-	print('{}\nDownloading...'.format('-' * 50))
+	print('{}\n{} is downloading...'.format('-' * 50, filename))
 	for no, link in enumerate(links, 1):
 		fileExtension = link.split('.')[-1]
 		try:
@@ -41,6 +40,6 @@ def save_img(data):
 			exit()
 		except:
 			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print('Zipping...')
+	print(filename, 'is zipping...')
 	filehandle.zip_file(files, filename + '-' + "hentaivn.net" + '.zip')
-	print('Done!')
+	print(filename, 'is done!')

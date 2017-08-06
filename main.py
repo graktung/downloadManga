@@ -8,7 +8,9 @@ SUPPORT
 - http://truyentranh8.net/
 '''
 
-from os import system
+import threading
+from time import sleep
+from os import system, mkdir
 # get link from command and download immediately. Not require
 from sys import argv
 
@@ -28,6 +30,23 @@ SUPPORT_WEBSITES_SEARCH = [
 
 # scriptname and link
 lenArgv = 2
+# get the maximum threading
+try:
+	with open('database/configthreading.txt') as f:
+		nTs = f.read().strip()
+		if nTs.isdigit():
+			nTs = int(nTs) if int(nTs) <= 10 else 3
+		else:
+			nTs = 1
+except:
+	try:
+		with open('database/configthreading.txt', 'w') as f:
+			f.write('1')
+	except:
+		mkdir('database')
+		with open('database/configthreading.txt', 'w') as f:
+			f.write('1')
+	nTs = 1
 
 def get_and_down(moduleDownload, link):
 	try:
@@ -39,8 +58,13 @@ def get_and_down(moduleDownload, link):
 				n = None
 			else:
 				n = int(n)
-			for d in data[:n]:
-				moduleDownload.save_img(d)
+			for i in range(0, n, nTs):
+				for d in data[i: i + nTs if i + nTs < n else n]:
+					threading.Thread(target=moduleDownload.save_img, \
+										args=(d,)).start()
+				# if there's not only main thread
+				while threading.active_count() != 1:
+					sleep(0.1)
 		# notification done
 		print('\a')
 	except:
