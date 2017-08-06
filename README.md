@@ -1,9 +1,6 @@
 # Download Manga
----
 This is Python script which helps you to download, search manga.
 ## Getting Started
----
-You have to 
 ### Prerequisites
 This script support for version Python 3.X (3.6.1).         
 [Download Python here](https://www.python.org/downloads/) if you are using Windows OS.
