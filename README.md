@@ -1,6 +1,6 @@
 # Download Manga
 Hỗ trợ download, tìm kiếm các bộ, tập truyện trên một số websites
-## Chuẩn bịcài đặt
+## Chuẩn bị cài đặt
 Các bạn cần phải đáp ứng những thứ sau đây để có thể sử dụng được thư viện này.
 ### Cài đặt môi trường
 Version Python 3.X (3.6.1).         
