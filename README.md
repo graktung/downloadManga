@@ -6,12 +6,12 @@ Các bạn cần phải đáp ứng những thứ sau đây để có thể sử
 Version Python 3.X (3.6.1).         
 Các bạn [Download Python ở đây](https://www.python.org/downloads/) để cài đặt nếu như đang sử dụng hệ điều hành Windows.
 ### Các module cần cài đặt thêm
-* [jsbeautifier](https://github.com/beautify-web/js-beautify)
+* [jsbeautifier](https://github.com/beautify-web/js-beautify)        
 Cài đặt bằng command sau:
 ```
 pip install jsbeautifier
 ```
-* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/download/)
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/download           
 Các bạn có thể down load về rồi chạy file `setup.py` bằng command sau:
 ```
 python setup.py install
@@ -21,7 +21,7 @@ Nếu không, hãy cài đặt bằng cách sau:
 pip install bs4
 pip install lxml
 ```
-* requests
+* requests         
 Cài đặt bằng command sau:
 ```
 pip install requests
@@ -43,7 +43,7 @@ Chạy file `main.py`
 ```
 python main.py
 ```
-Config file `database\configthreading.txt` để thay đổi threading. Tăng giảm tốc độ download và số lượng thread cho phép tối đa là 10
+Config file `database\configthreading.txt` để thay đổi threading. Tăng giảm tốc độ download và số lượng thread cho phép tối đa là **10**
 ## Command line
 Các command line được sử dụng trong script
 <table>
