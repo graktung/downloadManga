@@ -73,6 +73,7 @@ Các command line được sử dụng trong script
 		</tr>
 	</tbody>
 </table>
+<div class="gallery" markdown=1>
 ## Ví dụ
 Ta chạy file `main.py`.
 ![run main.py](images/1.png)
@@ -93,3 +94,4 @@ File zip khi download về.
 ## Authors
 - **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary)
 - **Coded** by [Nguyễn Thành Trung](https://twitter.com/thanhtrung2314)
+</div>
