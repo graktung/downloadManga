@@ -48,7 +48,6 @@ python main.py
 ```
 Config file `database\configthreading.txt` để thay đổi threading. Tăng giảm tốc độ download và số lượng thread cho phép tối đa là **10**
 ## Command line
-Các command line được sử dụng trong script        
 Command line | Explaination
 --- | ---
 `load` | Download toàn bộ các tập truyện của một bộ truyện
