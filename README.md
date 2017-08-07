@@ -73,3 +73,23 @@ Các command line được sử dụng trong script
 		</tr>
 	</tbody>
 </table>
+## Ví dụ
+Ta chạy file `main.py`.
+![run main.py](images/1.png)
+Chọn bộ truyện mà ta muốn download.
+![pick a manga](images/2.png)
+Sử dụng command line `load` để bắt đầu download.
+![use load command](images/3.png)
+Kết quả.
+![result](images/4.png)
+Để download một chap cụ thể.
+![load only chap](images/5.png)
+Dùng command `load only`.
+![load only command](images/6.png)
+Sử dụng `search` để tìm kiếm truyện.
+![search chap](images/7.png)
+File zip khi download về.
+![zip files](images/8.png
+## Authors
+- **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary)
+- **Coded** by [Nguyễn Thành Trung](https://twitter.com/thanhtrung2314)
