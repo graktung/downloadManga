@@ -1,5 +1,17 @@
 # Download Manga
 Hỗ trợ download, tìm kiếm các bộ, tập truyện trên một số websites
+## Hỗ trợ các websites
+Dưới đây là một số webistes được hỗ trợ.
+### Hỗ trợ download trên các websites
+* [http://blogtruyen.com/](http://blogtruyen.com/)
+* [http://truyentranhtuan.com/](http://truyentranhtuan.com/)
+* [http://www.mangapanda.com/](http://www.mangapanda.com/)
+* [http://hentaivn.net/](http://hentaivn.net/)
+* [http://manganel.com/](http://manganel.com/)
+* [http://truyentranh8.net/](http://truyentranh8.net/)
+### Hỗ trợ tìm kiếm trên các websites
+* [http://manganel.com/](http://manganel.com/)
+* [http://truyentranh8.net/](http://truyentranh8.net/)
 ## Chuẩn bị cài đặt
 Các bạn cần phải đáp ứng những thứ sau đây để có thể sử dụng được thư viện này.
 ### Cài đặt môi trường
@@ -29,18 +41,6 @@ Cài đặt bằng command sau:
 ```
 pip install requests
 ```
-## Hỗ trợ các websites
-Dưới đây là một số webistes được hỗ trợ.
-### Hỗ trợ download trên các websites
-* [http://blogtruyen.com/](http://blogtruyen.com/)
-* [http://truyentranhtuan.com/](http://truyentranhtuan.com/)
-* [http://www.mangapanda.com/](http://www.mangapanda.com/)
-* [http://hentaivn.net/](http://hentaivn.net/)
-* [http://manganel.com/](http://manganel.com/)
-* [http://truyentranh8.net/](http://truyentranh8.net/)
-### Hỗ trợ tìm kiếm trên các websites
-* [http://manganel.com/](http://manganel.com/)
-* [http://truyentranh8.net/](http://truyentranh8.net/)
 ## Cách sử dụng
 Chạy file `main.py`
 ```
