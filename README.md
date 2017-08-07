@@ -12,7 +12,7 @@ Cài đặt bằng command sau:
 ```
 pip install jsbeautifier
 ```
-* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/download           
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/download)           
 
 Các bạn có thể down load về rồi chạy file `setup.py` bằng command sau:
 ```
