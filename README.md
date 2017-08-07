@@ -49,31 +49,13 @@ python main.py
 Config file `database\configthreading.txt` để thay đổi threading. Tăng giảm tốc độ download và số lượng thread cho phép tối đa là **10**
 ## Command line
 Các command line được sử dụng trong script
-<table>
-	<tbody>
-		<tr>
-			<th>load</th>
-			<th>Chọn để download toàn bộ các tập truyện của một bộ truyện</th>
-		</tr>
-		<tr>
-			<th>load only</th>
-			<th>Chọn để download một tập truyện bất kì</th>
-		</tr>
-		<tr>
-			<th>search</th>
-			<th>Chọn để tìm kiếm truyện</th>
-		</tr>
-		<tr>
-			<th>clear</th>
-			<th>Xóa màn hình</th>
-		</tr>
-		<tr>
-			<th>exit</th>
-			<th>Dừng sử dụng script</th>
-		</tr>
-	</tbody>
-</table>
-<div class="gallery" markdown=1>
+Command line | Explain
+------------ | -------------
+load | Chọn để download toàn bộ các tập truyện của một bộ truyện
+load only | Chọn để download một tập truyện bất kì
+search | Chọn để tìm kiếm truyện
+clear| Xóa màn hình
+exit | Dừng sử dụng script
 ## Ví dụ
 Ta chạy file `main.py`.
 ![run main.py](images/1.png)
@@ -94,4 +76,3 @@ File zip khi download về.
 ## Authors
 - **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary)
 - **Coded** by [Nguyễn Thành Trung](https://twitter.com/thanhtrung2314)
-</div>
