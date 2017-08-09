@@ -14,21 +14,21 @@ from os import system, mkdir
 
 SUPPORT_WEBSITES_DOWNLOAD = [
     {'domain': 'http://blogtruyen.com/',
-        'module': 'blogtruyenfix', 'class': 'BlogTruyen'},
+     'module': 'blogtruyen', 'class': 'BlogTruyen'},
     {'domain': 'http://truyentranhtuan.com/',
-        'module': 'truyentranhtuanfix', 'class': 'TruyenTranhTuan'},
+     'module': 'truyentranhtuan', 'class': 'TruyenTranhTuan'},
     {'domain': 'http://www.mangapanda.com/',
-        'module': 'mangapandafix', 'class': 'MangaPanda'},
-    {'domain': 'http://hentaivn.net/', 'module': 'hentaivnfix', 'class': 'HentaiVN'},
-    {'domain': 'http://manganel.com/', 'module': 'manganelfix', 'class': 'Manganel'},
+     'module': 'mangapanda', 'class': 'MangaPanda'},
+    {'domain': 'http://hentaivn.net/', 'module': 'hentaivn', 'class': 'HentaiVN'},
+    {'domain': 'http://manganel.com/', 'module': 'manganel', 'class': 'Manganel'},
     {'domain': 'http://truyentranh8.net/',
-        'module': 'truyentranh8fix', 'class': 'TruyenTranhTam'}
+     'module': 'truyentranhtam', 'class': 'TruyenTranhTam'}
 ]
 
 SUPPORT_WEBSITES_SEARCH = [
-    {'domain': 'http://manganel.com/', 'module': 'manganelfix', 'class': 'Manganel'},
+    {'domain': 'http://manganel.com/', 'module': 'manganel', 'class': 'Manganel'},
     {'domain': 'http://truyentranh8.net/',
-        'module': 'truyentranh8fix', 'class': 'TruyenTranhTam'}
+     'module': 'truyentranhtam', 'class': 'TruyenTranhTam'}
 ]
 
 
