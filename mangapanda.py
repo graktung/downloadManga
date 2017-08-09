@@ -1,46 +1,76 @@
-from requests import get as requests_get
-from bs4 import BeautifulSoup as besoup
-
+'''
+- filehandle to download and zip files
+- requests to get HTML source
+- BeautifulSoup to crawl data
+'''
 import filehandle
+import requests
+from bs4 import BeautifulSoup
 
-hostname = 'http://www.mangapanda.com'
 
-def get_data(link):
-	HTML = requests_get(link).text
-	source = besoup(HTML, 'lxml')
-	title = source.find('title').text.split('-')[0].strip()
-	chapters = source.find(id='listing').find_all('a')
-	num = len(chapters)
-	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
-	data = []
-	for chap in chapters:
-		tempData = {}
-		tempData['href'] = hostname + chap['href']
-		tempData['title'] = chap.contents[0]
-		data.append(tempData)
-	return data
+class MangaPanda:
+    '''
+    No idea for docs string,
+    sorry guy
+    but to be honest
+    there'se nothing.
+    '''
 
-def save_img(data):
-	print('Title:', data['title'], '\nLink:', data['href'])
-	filename = '-'.join(data['title'].split())
-	HTML = requests_get(data['href']).text
-	source = besoup(HTML, 'lxml')
-	num = len(source.find(id='pageMenu').find_all('option'))
-	files = []
-	print('{}\n{} is downloading...'.format('-' * 50, filename))
-	for no in range(1, num + 1):
-		html = requests_get(data['href'] + '/' + str(no)).text
-		source = besoup(html, 'lxml')
-		link = source.find(id='img')['src']
-		fileExtension = link.split('.')[-1]
-		try:
-			name = filename + '-' + str(no) + '.' + fileExtension
-			files.append(filehandle.download_file(link, name))
-			print('Loaded', name, 'Successfully!')
-		except KeyboardInterrupt:
-			exit()
-		except:
-			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print(filename, 'is zipping...')
-	filehandle.zip_file(files, filename + '-' + "mangapanda.com" + '.zip')
-	print(filename, 'is done!')
+    def __init__(self):
+        self.hostname = 'http://www.mangapanda.com'
+
+    def get_data(self, link):
+        '''
+        GET:
+        + the name of manga
+        + links of all chapters
+        '''
+        html_source = requests.get(link).text
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        title_text = crawl_data.find('title').text
+        # title_text = 'chap name Manga - Read chap name Online For Free'
+        manga_name = title_text.split('-')[0].replace('Manga', '').strip()
+        # each item in list_chapters
+        # <a href="link">chap name</a>
+        list_chapters = crawl_data.find(id='listing').find_all('a')
+        num_of_chaps = len(list_chapters)
+        print('\n-> Detect\nWeb:', self.hostname, '\nManga: ', manga_name,
+              '\nChaps:', num_of_chaps)
+        data_list_chapters = list(map(lambda x: dict(name=x.text.strip(),
+                                                     link=self.hostname +
+                                                     x['href']),
+                                      list_chapters))
+        return data_list_chapters
+
+    def download_image(self, data_chapter):
+        '''
+        download all images from specific chap
+        after that zip them into a file
+        '''
+        print('Name:', data_chapter['name'], '\nLink:', data_chapter['link'])
+        file_zip_name = '-'.join(data_chapter['name'].split())
+        html_source = requests.get(data_chapter['link']).text
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        # each option contains each link of image
+        list_image_in_options = crawl_data.find_all('option')
+        list_images = map(lambda x: self.hostname + x['value'],
+                          list_image_in_options)
+        print('{}\nDownloading...'.format('-' * 50))
+        # store all downloaded file names to zip
+        downloaded_file_names = []
+        for num, img in enumerate(list_images):
+            # avoid variable in url
+            # link?variable=value
+            link_img = img.split('?')[0]
+            file_extension = '.' + link_img.split('.')[-1]
+            if file_extension.lower() not in ('.jpg', '.png', '.jpeg'):
+                continue
+            file_name = file_zip_name + '-' + str(num) + file_extension
+            # filehandle.download_file object returns file_name
+            downloaded_file_names.append(filehandle.FileHandle().download_file(
+                link_img, file_name))
+            print('Loaded', file_name, 'successfully.')
+        print('Zipping...')
+        filehandle.FileHandle().zip_file(downloaded_file_names,
+                                         file_zip_name + 'mangapanda.com.zip')
+        print('Done.')

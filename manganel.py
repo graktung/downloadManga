@@ -1,57 +1,106 @@
-from requests import get as requests_get
-from re import search as re_search, findall as re_findall
-from bs4 import BeautifulSoup as besoup
-
+'''
+- re to regex process keyword
+- filehandle to download and zip files
+- requests to get HTML source
+- BeautifulSoup to crawl data
+'''
+import re
 import filehandle
+import requests
+from bs4 import BeautifulSoup
 
-hostname = 'http://manganel.com'
-linkSearch = 'http://manganel.com/search/'
 
-def get_data(link):
-	HTML = requests_get(link).text
-	source = besoup(HTML, 'lxml')
-	title = source.find('title').text.split('Manga')[0].replace('Read', '').strip()
-	chapters = source.find(class_='chapter-list').find_all('a')
-	num = len(chapters)
-	print('\n-> Detect\nWeb:', hostname, '\nManga: ', title, '\nChaps:', num)
-	data = []
-	for chap in chapters:
-		tempData = {}
-		tempData['href'] = chap['href']
-		tempData['title'] = chap.contents[0]
-		data.append(tempData)
-	return data
+class Manganel:
+    '''
+    I had no idea about docs string
+    try to read these nonsese things
+    hohoho
+    '''
 
-def save_img(data):
-	print('Title:', data['title'], '\nLink:', data['href'])
-	filename = '-'.join(data['title'].split())
-	HTML = requests_get(data['href']).text
-	source = besoup(HTML, 'lxml')
-	links = map(lambda x: x['src'], source.find(id='vungdoc').find_all('img'))
-	files = []
-	print('{}\n{} is downloading...'.format('-' * 50, filename))
-	for no, link in enumerate(links, 1):
-		fileExtension = link.split('.')[-1]
-		try:
-			name = filename + '-' + str(no) + '.' + fileExtension
-			files.append(filehandle.download_file(link, name))
-			print('Loaded', name, 'Successfully!')
-		except KeyboardInterrupt:
-			exit()
-		except:
-			print('Missed %r' %(filename + '-' + str(no) + '.' + fileExtension))
-	print(filename, 'is zipping...')
-	filehandle.zip_file(files, filename + '-' + "manganel.com" + '.zip')
-	print(filename, 'is done!')
+    def __init__(self):
+        self.hostname = 'http://manganel.com'
+        self.link_search = 'http://manganel.com/search/'
 
-def search(keyword, num):
-	regexKeyword = r'\w+'
-	key = '_'.join(re_findall(regexKeyword, keyword))
-	HTML = requests_get(linkSearch + key).text
-	source = besoup(HTML, 'lxml')
-	results = source.find_all(class_='daily-update-item')[:num]
-	results = map(lambda x: x.find_all('a'), results)
-	results = [hostname] + list(map(lambda x: [{'title': x[0].text, 'href': x[0]['href']}\
-								, {'title': x[1].text, 'href': x[1]['href']}],\
-								results))
-	return results
+    def get_data(self, link):
+        '''
+        GET:
+        + the name of manga
+        + links of all chapters
+        '''
+        html_source = requests.get(link).text
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        title_text = crawl_data.find('title').text
+        # title_text = 'Read chap name Manga Online For Free'
+        manga_name = title_text.split('Manga')[0].replace('Readn', '')
+        # each item in list_chapters
+        # <a href=link
+        # title="chap text" target="_blank">chap text</a>
+        list_chapters = crawl_data.find(class_='chapter-list').find_all('a')
+        num_of_chaps = len(list_chapters)
+        print('\n-> Detect\nWeb:', self.hostname, '\nManga: ', manga_name,
+              '\nChaps:', num_of_chaps)
+        # [{'name': .., 'link': ..}, {}, ..]
+        data_list_chapters = list(map(lambda x: dict(name=x.text.strip(),
+                                                     link=x['href']),
+                                      list_chapters))
+        return data_list_chapters
+
+    def search(self, keyword):
+        '''
+        get searched results by given keyword
+        '''
+        # use regex and join to fix given keyword
+        regex_keyword = r'\w+'
+        # keyword given -> keyword_given
+        keyword = '_'.join(re.findall(regex_keyword, keyword))
+        html_source = requests.get(self.link_search + keyword).text
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        # item-name contains link and chap name
+        # item-chapter contains link and latest chap name
+        list_item_name = crawl_data.find_all(class_='item-name')
+        list_item_chapter = crawl_data.find_all(class_='item-chapter')
+        # each item in list_chapters
+        # <span class="item-name">
+        # <a href=link>chap name</a>
+        # </span>
+        # <a class="item-chapter" href=link title=chap content>chap conent</a>
+        list_chapters = zip(list_item_name, list_item_chapter)
+        results = [self.hostname] + list(map(
+            lambda x: [dict(
+                name=x[0].find('a')['href'], link=x[0].find('a').text.strip()),
+                       dict(name=x[1].text.strip(), link=['href'])],
+            list_chapters))
+        return results
+
+    @staticmethod
+    def download_image(data_chapter):
+        '''
+        download all images from specific chap
+        after that, zip them into a file
+        '''
+        print('Name:', data_chapter['name'], '\nLink:', data_chapter['link'])
+        # chap name -> chap-name
+        file_zip_name = '-'.join(data_chapter['name'].split())
+        html_source = requests.get(data_chapter['link']).text
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        list_images = crawl_data.find(id='vungdong').find_all('img')
+        print('{}\nDownloading...'.format('-' * 50))
+        # store all downloaded file names to zip
+        downloaded_file_names = []
+        for num, img in enumerate(list_images):
+            # avoid variable in url
+            # link?variable=value
+            link_img = img['src'].split('?')[0]
+            # http.link.file_extension
+            file_extension = '.' + link_img.split('.')[-1]
+            if file_extension.lower() not in ('.jpg', '.png', '.jpeg'):
+                continue
+            file_name = file_zip_name + '-' + str(num) + file_extension
+            # filehandle.download_file object returns file_name
+            downloaded_file_names.append(filehandle.FileHandle().download_file(
+                link_img, file_name))
+            print('Loaded', file_name, 'successfully.')
+        print('Zipping...')
+        filehandle.FileHandle().zip_file(downloaded_file_names,
+                                         file_zip_name + 'manganel.com.zip')
+        print('Done.')

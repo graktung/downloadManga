@@ -7,151 +7,222 @@ SUPPORT
 - http://manganel.com/
 - http://truyentranh8.net/
 '''
-
 import threading
+import importlib
 from time import sleep
 from os import system, mkdir
-# get link from command and download immediately. Not require
-from sys import argv
 
 SUPPORT_WEBSITES_DOWNLOAD = [
-	{'domain': 'http://blogtruyen.com/', 'module': 'blogtruyen'},
-	{'domain': 'http://truyentranhtuan.com/', 'module': 'truyentranhtuan'},
-	{'domain': 'http://www.mangapanda.com', 'module': 'mangapanda'},
-	{'domain': 'http://hentaivn.net', 'module': 'hentaivn'},
-	{'domain': 'http://manganel.com', 'module': 'manganel'},
-	{'domain': 'http://truyentranh8.net/', 'module': 'truyentranh8'}
+    {'domain': 'http://blogtruyen.com/',
+        'module': 'blogtruyenfix', 'class': 'BlogTruyen'},
+    {'domain': 'http://truyentranhtuan.com/',
+        'module': 'truyentranhtuanfix', 'class': 'TruyenTranhTuan'},
+    {'domain': 'http://www.mangapanda.com/',
+        'module': 'mangapandafix', 'class': 'MangaPanda'},
+    {'domain': 'http://hentaivn.net/', 'module': 'hentaivnfix', 'class': 'HentaiVN'},
+    {'domain': 'http://manganel.com/', 'module': 'manganelfix', 'class': 'Manganel'},
+    {'domain': 'http://truyentranh8.net/',
+        'module': 'truyentranh8fix', 'class': 'TruyenTranhTam'}
 ]
 
 SUPPORT_WEBSITES_SEARCH = [
-	{'domain': 'http://manganel.com', 'module': 'manganel'},
-	{'domain': 'http://truyentranh8.net/', 'module': 'truyentranh8'}
+    {'domain': 'http://manganel.com/', 'module': 'manganelfix', 'class': 'Manganel'},
+    {'domain': 'http://truyentranh8.net/',
+        'module': 'truyentranh8fix', 'class': 'TruyenTranhTam'}
 ]
 
-# scriptname and link
-lenArgv = 2
-# get the maximum threading
-try:
-	with open('database/configthreading.txt') as f:
-		nTs = f.read().strip()
-		if nTs.isdigit():
-			nTs = int(nTs) if int(nTs) <= 10 else 3
-		else:
-			nTs = 1
-except:
-	try:
-		with open('database/configthreading.txt', 'w') as f:
-			f.write('1')
-	except:
-		mkdir('database')
-		with open('database/configthreading.txt', 'w') as f:
-			f.write('1')
-	nTs = 1
 
-def get_and_down(moduleDownload, link):
-	try:
-		data = moduleDownload.get_data(link)
-		askDown = input('Download (y/n) ')
-		if askDown.lower().strip() in ('y', 'yes'):
-			n = input('How many? ')
-			if not n.isdigit() or n.lower().strip() == ('all'):
-				n = None
-			else:
-				n = int(n)
-			for i in range(0, n, nTs):
-				for d in data[i: i + nTs if i + nTs < n else n]:
-					threading.Thread(target=moduleDownload.save_img, \
-										args=(d,)).start()
-				# if there's not only main thread
-				while threading.active_count() != 1:
-					sleep(0.1)
-		# notification done
-		print('\a')
-	except:
-		exit()
+class Main:
+    '''
+    I am not used to writing docs string
+    so this what I wrote
+    sorry for its uselessness
+    '''
 
-def handle_link_download(link):
-	for site in SUPPORT_WEBSITES_DOWNLOAD:
-		if site['domain'] in link:
-			moduleDownload = __import__(site['module'])
-			get_and_down(moduleDownload, link)
-			break
+    def main(self):
+        '''
+        main method
+        MAIN METHOD
+        main METHOD
+        MAIN method
+        Main Method
+        '''
+        while 1:
+            command = self.read_command()
+            self.decide(command)
 
-def handle_search(keyword, n):
-	data = []
-	for site in SUPPORT_WEBSITES_SEARCH:
-		data.append(__import__(site['module']).search(keyword, n))
-	if len(data) == 0:
-		print('No results found from keyword %r' %keyword)
-		return None
-	for d in data:
-		print('Enter to continue, Ctrl + C to stop')
-		try:
-			print('=' * 50, '\n')
-			print('Web:' + d[0] + '\n')
-			for f in d[1:]:
-				print('-' * 50)
-				print('Name:', f[0]['title'], '\nLatest:', f[1]['title'])
-				print('+' * 50)
-				print('Chap:       ', f[0]['href'])
-				print('Latest chap:', f[1]['href'])
-				try:
-					input()
-				except KeyboardInterrupt:
-					print()
-					break
-			input()
-		except KeyboardInterrupt:
-			print()
-			break
+    def decide(self, command):
+        '''
+        If you want more detailed information
+        visit here: https://github.com/graktung/downloadManga
+        check README.md out
+        '''
+        if command in ('load', 'download', 'down'):
+            link = input('Link: ')
+            # go to check the link download
+            self.handle_link_download(link)
+        elif command in ('load only', 'laod only'):
+            link = input('Link: ')
+            self.load_only(link)
+        elif command in ('search', 'serch', 'sarch'):
+            key = input('Keyword: ')
+            self.handle_search(key)
+        elif command in ('cls', 'clear', 'cear'):
+            system('cls')
+        elif command in ('quit', 'q', 'exit'):
+            exit()
 
-def load_only(link):
-	try:
-		for site in SUPPORT_WEBSITES_DOWNLOAD:
-			if site['domain'] in link:
-				moduleDownload = __import__(site['module'])
-				moduleDownload.save_img({'title': site['module'],\
-										'href': link})
-				break
-		print('\a')
-	except:
-		exit()
+    def handle_link_download(self, link):
+        '''
+        pick suitable module and class for downloading
+        '''
+        for site in SUPPORT_WEBSITES_DOWNLOAD:
+            if site['domain'] in link:
+                module = importlib.import_module(site['module'])
+                class_ = getattr(module, site['class'])
+                object_of_class = class_()
+                self.get_and_down(object_of_class, link)
+                break
 
-def read_command():
-	command = ''
-	while command == '':
-		command = input('=]] ').lower().strip()
-	return command
+    def get_and_down(self, object_of_class, link):
+        '''
+        get data by get_data method
+        and download chapters if want to down
+        '''
+        data_list_chapters = object_of_class.get_data(link)
+        down_or_not = input('Download (y/n)? ').lower().strip()
+        if down_or_not in ('y', 'yes'):
+            num_of_desire_chap = input('How many? ')
+            if not num_of_desire_chap.isdigit() or\
+            num_of_desire_chap.lower().strip() == ('all'):
+                num_of_desire_chap = len(data_list_chapters)
+            else:
+                num_of_desire_chap = int(num_of_desire_chap)
+            # this is hard code
+            # :D
+            # if you don't understand it but want to understand
+            # contact me
+            # Twitter: https://twitter.com/thanhtrung2314
+            for i in range(0, num_of_desire_chap, self.threading_num):
+                for small_data in data_list_chapters[i: i + self.threading_num\
+                if i + self.threading_num < num_of_desire_chap
+                                                     else num_of_desire_chap]:
+                    threading.Thread(target=object_of_class.download_image,
+                                     args=(small_data,)).start()
+                # if there's not only main thread
+                while threading.active_count() != 1:
+                    sleep(0.1)
+        # notification done
+        print('\a')
 
-def decide(command):
-	if command in ('load', 'download', 'down'):
-		link = input('Link: ')
-		# go to check the link
-		handle_link_download(link)
-	elif command in ('load only'):
-		link = input('Link: ')
-		load_only(link)
-	elif command in ('search', 'serch', 'sarch'):
-		key = input('Keyword: ')
-		nResult = input('Which maximum results do u wanna display: ')
-		if not nResult.isdigit() or nResult.lower().strip() == ('all'):
-			nResult = None
-		else:
-			nResult = int(nResult)
-		handle_search(key, nResult)
-	elif command in ('cls', 'clear', 'cear'):
-		system('cls')
-	elif command in ('quit', 'q', 'exit'):
-		exit()
+    @staticmethod
+    def read_command():
+        '''
+        read input from keyboard
+        drop all space from left and right of input string
+        '''
+        command = ''
+        while command == '':
+            command = input('=]] ').lower().strip()
+        return command
 
-def main():
-	# if get link from argv
-	if lenArgv == len(argv):
-		link = argv[1]
-	else:
-		while 1:
-			command = read_command()
-			decide(command)
+    @staticmethod
+    def handle_search(keyword):
+        '''
+        search by given keyword
+        maximum searched results each site
+        given in run-time
+        '''
+        maximum_results = input('How many results do you want to display? ')
+        if maximum_results.isdigit():
+            maximum_results = int(maximum_results)
+            # invalid maximum results
+            if maximum_results < 1 or maximum_results > 10:
+                maximum_results = 3
+        else:
+            maximum_results = 3
+        searched_data = []
+        for site in SUPPORT_WEBSITES_SEARCH:
+            module = importlib.import_module(site['module'])
+            class_ = getattr(module, site['class'])
+            object_of_class = class_()
+            searched_data.append(object_of_class.search(
+                keyword)[:maximum_results])
+        is_searched_data_empty = len(searched_data) == 0
+        if is_searched_data_empty:
+            print('No results found from keyword %r' % keyword)
+            return None
+        # each item in searched_data contains results from one web
+        # each item in small_data contains information about one chap
+        # let's mini_date hold each item in small_data
+        for small_data in searched_data:
+            print('Enter to continue, Ctrl + C to stop')
+            try:
+                print('=' * 50, '\n')
+                print('Web:' + small_data[0] + '\n')
+                for mini_data in small_data[1:]:
+                    print('-' * 50)
+                    print('Name:', mini_data[0]['name'], '\nLatest:',
+                          mini_data[1]['name'])
+                    print('+' * 50)
+                    print('Chap:       ', mini_data[0]['link'])
+                    print('Latest chap:', mini_data[1]['link'])
+                    try:
+                        input()
+                    except KeyboardInterrupt:
+                        print()
+                        break
+                input()
+            except KeyboardInterrupt:
+                print()
+                break
+
+    @staticmethod
+    def load_only(link):
+        '''
+        download only a specific chap
+        not anything else :3
+        '''
+        for site in SUPPORT_WEBSITES_DOWNLOAD:
+            if site['domain'] in link:
+                module = importlib.import_module(site['module'])
+                class_ = getattr(module, site['class'])
+                object_of_class = class_()
+                object_of_class.download_image({'name': 'Tac gia khong biet ten',
+                                                'link': link})
+                break
+        print('\a')
+
+    @property
+    def threading_num(self):
+        '''
+        get the number of threading
+        config in database/configthreading.txt'
+        maximum threading is 10
+        minimum threading is 1
+        '''
+        try:
+            with open('database/configthreading.txt') as read_file:
+                str_num_of_threads = read_file.read().strip()
+            # check valid num of threading
+            if str_num_of_threads.isdigit():
+                num_of_threads = int(str_num_of_threads) if 1 <=\
+                    int(str_num_of_threads) <= 10 else 3
+            else:
+                num_of_threads = 1
+        # if file does not exist
+        except FileNotFoundError:
+            # make file to next read
+            try:
+                with open('database/configthreading.txt', 'w') as written_file:
+                    written_file.write('1')
+            # if folder does not exist
+            except FileNotFoundError:
+                mkdir('database')
+                with open('database/configthreading.txt', 'w') as written_file:
+                    written_file.write('1')
+            num_of_threads = 1
+        return num_of_threads
 
 if __name__ == '__main__':
-	main()
+    Main().main()
