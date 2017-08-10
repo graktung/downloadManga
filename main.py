@@ -142,13 +142,16 @@ class Main:
         else:
             maximum_results = 3
         searched_data = []
+        # pick suitable module
         for site in SUPPORT_WEBSITES_SEARCH:
             module = importlib.import_module(site['module'])
             class_ = getattr(module, site['class'])
             object_of_class = class_()
             searched_data.append(object_of_class.search(
                 keyword)[:maximum_results])
-        is_searched_data_empty = len(searched_data) == 0
+        # equal 1, because first element is hostname
+        # if it's empty, it should have length is one
+        is_searched_data_empty = len(searched_data) == 1
         if is_searched_data_empty:
             print('No results found from keyword %r' % keyword)
             return None
@@ -158,6 +161,7 @@ class Main:
         for small_data in searched_data:
             print('Enter to continue, Ctrl + C to stop')
             try:
+                # drop first element: hostname
                 print('=' * 50, '\n')
                 print('Web:' + small_data[0] + '\n')
                 for mini_data in small_data[1:]:
