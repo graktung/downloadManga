@@ -21,6 +21,8 @@ class TruyenTranhTam:
 
     def __init__(self):
         self.hostname = 'http://truyentranh8.net'
+        self.link_search = ('http://truyentranh8.net/search.php?'
+                            'act=timnangcao&q=')
 
     def get_data(self, link):
         '''
@@ -79,6 +81,28 @@ class TruyenTranhTam:
         filehandle.FileHandle().zip_file(downloaded_file_names,
                                          file_zip_name + 'truyentranh8.net.zip')
         print('Done.')
+
+    def search(self, keyword):
+        '''
+        get searched results by given keyword
+        '''
+        # use regex and join to fix given keyword
+        regex_keyword = r'\w+'
+        # keyword given -> keyword+given
+        keyword = '+'.join(re.findall(regex_keyword, keyword))
+        html_source = requests.get(self.link_search + keyword)
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        # item-name contains link and chap name
+        # item-chapter contains link and latest chap name
+        list_item_name = crawl_data.find_all('a', class_='tipsy')
+        list_item_chapter = crawl_data.find_all('a', class_='cluetip')
+        list_chapters = zip(list_item_name, list_item_chapter)
+        results = [self.hostname] + list(map(
+            lambda x: [dict(
+                name=x[0].text.strip(), link=x[0]['href']),
+                       dict(name=x[1].text.strip(), link=x[1]['href'])],
+            list_chapters))
+        return results
 
     def sort_link(self, list_links):
         '''
