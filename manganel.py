@@ -59,16 +59,11 @@ class Manganel:
         # item-chapter contains link and latest chap name
         list_item_name = crawl_data.find_all(class_='item-name')
         list_item_chapter = crawl_data.find_all(class_='item-chapter')
-        # each item in list_chapters
-        # <span class="item-name">
-        # <a href=link>chap name</a>
-        # </span>
-        # <a class="item-chapter" href=link title=chap content>chap conent</a>
         list_chapters = zip(list_item_name, list_item_chapter)
         results = [self.hostname] + list(map(
             lambda x: [dict(
-                name=x[0].find('a')['href'], link=x[0].find('a').text.strip()),
-                       dict(name=x[1].text.strip(), link=['href'])],
+                name=x[0].text.strip(), link=x[0].find('a').find('a')['href']),
+                       dict(name=x[1].text.strip(), link=x[1]['href'])],
             list_chapters))
         return results
 
