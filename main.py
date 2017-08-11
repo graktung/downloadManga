@@ -111,7 +111,7 @@ class Main:
                                      args=(small_data,)).start()
                 # if there's not only main thread
                 while threading.active_count() != 1:
-                    sleep(0.1)
+                    sleep(0.0001)
         # notification done
         print('\a')
 

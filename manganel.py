@@ -78,7 +78,7 @@ class Manganel:
         file_zip_name = '-'.join(data_chapter['name'].split())
         html_source = requests.get(data_chapter['link']).text
         crawl_data = BeautifulSoup(html_source, 'lxml')
-        list_images = crawl_data.find(id='vungdong').find_all('img')
+        list_images = crawl_data.find(id='vungdoc').find_all('img')
         print('{}\nDownloading...'.format('-' * 50))
         # store all downloaded file names to zip
         downloaded_file_names = []

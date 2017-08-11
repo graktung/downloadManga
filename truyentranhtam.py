@@ -58,7 +58,9 @@ class TruyenTranhTam:
         '''
         print('Name:', data_chapter['name'], '\nLink:', data_chapter['link'])
         # chap name -> chap-name
-        file_zip_name = '-'.join(data_chapter.split())
+        # go to line 199 for more information
+        file_zip_name = self.filter_file_name(
+            '-'.join(data_chapter['name'].split()))
         html_source = requests.get(data_chapter['link']).text
         list_link_images = self.sort_link(self.get_link_by_regex(
             self.decode_eval(
@@ -69,6 +71,8 @@ class TruyenTranhTam:
         for num, link in enumerate(list_link_images):
             # avoid variable in url
             # link?variable=value
+            link = link.split('?')[0]
+            # http.link.file_extension
             file_extension = '.' + link.split('.')[-1]
             if file_extension.lower() not in ('.jpg', '.png', '.jpeg'):
                 continue
@@ -110,6 +114,16 @@ class TruyenTranhTam:
         to read this docs string
         '''
         return sorted(set(list_links), key=self.get_num_in_link)
+
+    @staticmethod
+    def filter_file_name(file_name):
+        '''
+        file name may contain some chars like : <, >, :, /, |, ..
+        '''
+        regex_filter = r'[^<>:/\\|?*]+'
+        match_filter = re.findall(regex_filter, file_name)
+        file_name = '-'.join(match_filter)
+        return file_name
 
     @staticmethod
     def get_eval_string(html_source):

@@ -53,7 +53,8 @@ class MangaPanda:
         crawl_data = BeautifulSoup(html_source, 'lxml')
         # each option contains each link of image
         list_image_in_options = crawl_data.find_all('option')
-        list_images = map(lambda x: self.hostname + x['value'],
+        list_images = map(lambda x: self.get_link_img(self.hostname +
+                                                      x['value']),
                           list_image_in_options)
         print('{}\nDownloading...'.format('-' * 50))
         # store all downloaded file names to zip
@@ -62,6 +63,7 @@ class MangaPanda:
             # avoid variable in url
             # link?variable=value
             link_img = img.split('?')[0]
+            # http.link.file_extension
             file_extension = '.' + link_img.split('.')[-1]
             if file_extension.lower() not in ('.jpg', '.png', '.jpeg'):
                 continue
@@ -74,3 +76,17 @@ class MangaPanda:
         filehandle.FileHandle().zip_file(downloaded_file_names,
                                          file_zip_name + 'mangapanda.com.zip')
         print('Done.')
+
+    @staticmethod
+    def get_link_img(link):
+        '''
+        get link img
+        I have to code this
+        because, each url
+        contains each img.
+        1 url not contains all of images like other websites
+        '''
+        html_source = requests.get(link).text
+        crawl_data = BeautifulSoup(html_source, 'lxml')
+        img = crawl_data.find('img', id='img')['src']
+        return img

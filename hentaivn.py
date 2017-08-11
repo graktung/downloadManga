@@ -38,7 +38,7 @@ class HentaiVN:
         # chap name chap num</h2></a>
         # </td>
         list_chapters = crawl_data.find('tbody').find_all(
-            class_='chuong_td')[1:]
+            class_='chuong_td')
         num_of_chaps = len(list_chapters)
         print('\n-> Detect\nWeb:', self.hostname, '\nManga: ', manga_name,
               '\nChaps:', num_of_chaps)

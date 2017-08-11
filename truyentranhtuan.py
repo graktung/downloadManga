@@ -37,7 +37,8 @@ class TruyenTranhTuan:
               '\nChaps:', num_of_chaps)
         # [{'name': .., 'link': ..}, {}, ..]
         data_list_chapters = list(map(lambda x: dict(name=x.find('a')
-        	                                            .text.strip(),
+                                                     .text.strip()
+                                                     .decode('utf-8'),
                                                      link=x.find('a')
                                                      ['href']), list_chapters))
         return data_list_chapters
@@ -47,7 +48,8 @@ class TruyenTranhTuan:
         download all images from specific chap
         after that, zip them into a file
         '''
-        print('Name:', data_chapter['name'], '\nLink:', data_chapter['link'])
+        print('Name:', data_chapter['name'], '\nLink:',
+              data_chapter['link'])
         # chap name -> chap-name
         file_zip_name = '-'.join(data_chapter['name'].split())
         html_source = requests.get(data_chapter['link']).text
