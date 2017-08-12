@@ -12,6 +12,11 @@ import importlib
 from time import sleep
 from os import system, mkdir
 
+# update path for importing modules in websites folder
+import sys
+CURRENT_PATH_OF_SCRIPT = sys.path[0]
+sys.path.append(CURRENT_PATH_OF_SCRIPT + '\\websites')
+
 SUPPORT_WEBSITES_DOWNLOAD = [
     {'domain': 'http://blogtruyen.com/',
      'module': 'blogtruyen', 'class': 'BlogTruyen'},
@@ -19,14 +24,17 @@ SUPPORT_WEBSITES_DOWNLOAD = [
      'module': 'truyentranhtuan', 'class': 'TruyenTranhTuan'},
     {'domain': 'http://www.mangapanda.com/',
      'module': 'mangapanda', 'class': 'MangaPanda'},
-    {'domain': 'http://hentaivn.net/', 'module': 'hentaivn', 'class': 'HentaiVN'},
-    {'domain': 'http://manganel.com/', 'module': 'manganel', 'class': 'Manganel'},
+    {'domain': 'http://hentaivn.net/',
+     'module': 'hentaivn', 'class': 'HentaiVN'},
+    {'domain': 'http://manganel.com/',
+     'module': 'manganel', 'class': 'Manganel'},
     {'domain': 'http://truyentranh8.net/',
      'module': 'truyentranhtam', 'class': 'TruyenTranhTam'}
 ]
 
 SUPPORT_WEBSITES_SEARCH = [
-    {'domain': 'http://manganel.com/', 'module': 'manganel', 'class': 'Manganel'},
+    {'domain': 'http://manganel.com/',
+     'module': 'manganel', 'class': 'Manganel'},
     {'domain': 'http://truyentranh8.net/',
      'module': 'truyentranhtam', 'class': 'TruyenTranhTam'}
 ]
@@ -92,12 +100,15 @@ class Main:
         data_list_chapters = object_of_class.get_data(link)
         down_or_not = input('Download (y/n)? ').lower().strip()
         if down_or_not in ('y', 'yes'):
+            maximum_desire_chap = len(data_list_chapters)
             num_of_desire_chap = input('How many? ')
             if not num_of_desire_chap.isdigit() or\
             num_of_desire_chap.lower().strip() == ('all'):
-                num_of_desire_chap = len(data_list_chapters)
+                num_of_desire_chap = maximum_desire_chap
             else:
                 num_of_desire_chap = int(num_of_desire_chap)
+                if num_of_desire_chap > maximum_desire_chap:
+                    num_of_desire_chap = maximum_desire_chap
             # this is hard code
             # :D
             # if you don't understand it but want to understand
@@ -192,7 +203,7 @@ class Main:
                 module = importlib.import_module(site['module'])
                 class_ = getattr(module, site['class'])
                 object_of_class = class_()
-                object_of_class.download_image({'name': 'Tac gia khong biet ten',
+                object_of_class.download_image({'name': 'Khong biet ten',
                                                 'link': link})
                 break
         print('\a')
