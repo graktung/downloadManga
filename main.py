@@ -10,12 +10,13 @@ SUPPORT
 import threading
 import importlib
 from time import sleep
-from os import system, mkdir
+from os import system, mkdir, rename
 
 # update path for importing modules in websites folder
 import sys
-CURRENT_PATH_OF_SCRIPT = sys.path[0]
-sys.path.append(CURRENT_PATH_OF_SCRIPT + '\\websites')
+# let them as same as linux, unix ope if using windows.
+CURRENT_PATH_OF_SCRIPT = sys.path[0].replace('\\', '/')
+sys.path.append(CURRENT_PATH_OF_SCRIPT + '/websites')
 
 SUPPORT_WEBSITES_DOWNLOAD = [
     {'domain': 'http://blogtruyen.com/',
@@ -125,6 +126,13 @@ class Main:
                     sleep(0.0001)
         # notification done
         print('\a')
+        # if we downloaded more than 1 chaps
+        # then wrap them into a folder
+        # the name of the folder is the name of manga
+        if len(object_of_class.downloaded_files) > 1:
+            mkdir(object_of_class.stored_directory)
+            for file in object_of_class.downloaded_files:
+                rename(file, object_of_class.stored_directory + '/' + file)
 
     @staticmethod
     def read_command():
