@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 '''
 - zipfile to zip ifles
 - os to remove files after zip
@@ -63,14 +64,14 @@ class FileHandle:
         formatting_data[2] is backgroud name
         '''
         file_name = '-'.join(formatting_data[0].split()) + '.html'
-        html_file = open(file_name, 'w')
+        html_file = open(file_name, 'w', encoding='utf-8')
         # get head html
         with open(sys.path[0].replace('\\', '/') + '/html_maker/head.txt')\
         as head_html_file:
             head_html = head_html_file.read().rstrip()
         # get tail html
-        with open(sys.path[0].replace('\\', '/') + '/html_maker/tail.txt')\
-        as tail_html_file:
+        with open(sys.path[0].replace('\\', '/') + '/html_maker/tail.txt',
+                  encoding='utf-8') as tail_html_file:
             tail_html = tail_html_file.read().rstrip()
         html_file.write(head_html.format(chap_name=formatting_data[0],
                                          icon_name=formatting_data[1],

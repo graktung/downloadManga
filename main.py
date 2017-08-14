@@ -44,7 +44,7 @@ SUPPORT_WEBSITES_SEARCH = [
 class Main:
     '''
     I am not used to writing docs string
-    so this what I wrote
+    so this's what I wrote
     sorry for its uselessness
     '''
 

@@ -1,5 +1,5 @@
 # Download Manga
-Hỗ trợ download, tìm kiếm các bộ, tập truyện trên một số websites
+Hỗ trợ download, tìm kiếm các bộ, tập truyện trên một số websites. Có file .html để có thể đọc offline.
 ## Hỗ trợ các websites
 Dưới đây là một số webistes được hỗ trợ.
 ### Hỗ trợ download trên các websites
@@ -73,5 +73,5 @@ Sử dụng `search` để tìm kiếm truyện.
 File zip khi download về.
 ![zip files](/images/8.png)
 ## Authors
-- **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary)
-- **Coded** by [Nguyễn Thành Trung](https://twitter.com/thanhtrung2314)
+- **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary), [Lê Thành](https://github.com/baivong).
+- **Coded** by [Nguyễn Thành Trung](https://twitter.com/thanhtrung2314).
