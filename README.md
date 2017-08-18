@@ -73,5 +73,5 @@ Sử dụng `search` để tìm kiếm truyện.
 File zip khi download về.
 ![zip files](/images/8.png)
 ## Authors
-- **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary), [Lê Thành](https://github.com/baivong).
+- **Idea** by [chị Dồng](https://daynhauhoc.com/u/drgnz/summary), anh [Lê Thành](https://github.com/baivong).
 - **Coded** by [Nguyễn Thành Trung](https://twitter.com/thanhtrung2314).

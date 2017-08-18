@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 '''
 - zipfile to zip ifles
 - os to remove files after zip
@@ -8,9 +7,10 @@
 import zipfile
 import os
 import shutil
-import sys
 import requests
-
+import re
+import inspect
+PATH_PARENT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 class FileHandle:
     '''
@@ -54,6 +54,16 @@ class FileHandle:
         return file_name
 
     @staticmethod
+    def filter_file_name(file_name):
+        '''
+        file name may contain some chars like : <, >, :, /, |, ..
+        '''
+        regex_filter = r'[^<>:/\\|?*]+'
+        match_filter = re.findall(regex_filter, file_name)
+        file_name = '-'.join(match_filter)
+        return file_name
+
+    @staticmethod
     def make_html_file(formatting_data, files):
         '''
         this function
@@ -63,14 +73,14 @@ class FileHandle:
         formatting_data[1] is favicon name
         formatting_data[2] is backgroud name
         '''
-        file_name = '-'.join(formatting_data[0].split()) + '.html'
+        file_name = FileHandle.filter_file_name(formatting_data[0]) + '.html'
         html_file = open(file_name, 'w', encoding='utf-8')
         # get head html
-        with open(sys.path[0].replace('\\', '/') + '/html_maker/head.txt')\
+        with open(PATH_PARENT.replace('\\', '/') + '/html_maker/head.txt')\
         as head_html_file:
             head_html = head_html_file.read().rstrip()
         # get tail html
-        with open(sys.path[0].replace('\\', '/') + '/html_maker/tail.txt',
+        with open(PATH_PARENT.replace('\\', '/') + '/html_maker/tail.txt',
                   encoding='utf-8') as tail_html_file:
             tail_html = tail_html_file.read().rstrip()
         html_file.write(head_html.format(chap_name=formatting_data[0],

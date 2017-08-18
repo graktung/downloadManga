@@ -1,36 +1,29 @@
-'''
-you may get error when run directly this file
-so I update path for import filehandle
-'''
+import inspect
 import sys
-if __name__ == '__main__':
-    PATH_PARENT = '/'.join(sys.path[0].replace('\\', '/').split('/')[:-1])
-    sys.path.append(PATH_PARENT)
-else:
-    PATH_PARENT = '/'.join(sys.path[0].replace('\\', '/').split('/'))
-    sys.path.append(PATH_PARENT)
-# if you confuse how it works, contact me
-# Twitter: https://twitter.com/thanhtrung2314
+import os
+PATH_PARENT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+sys.path.append(PATH_PARENT)
 '''
-- filehandle to download and zip files
+- re to find eval string in HTML source
+- filehandle to download and zip file
 - requests to get HTML source
 - BeautifulSoup to crawl data
 '''
-import filehandle
+import re
 import requests
+import filehandle
 from bs4 import BeautifulSoup
 
 
-class MangaPanda:
+class TruyenTranhTuan:
     '''
-    No idea for docs string,
-    sorry guy
-    but to be honest
-    there'se nothing.
+    don't read it
+    it wastes your time
+    I said did not read it
     '''
 
     def __init__(self):
-        self.hostname = 'http://www.mangapanda.com'
+        self.hostname = 'http://truyentranhtuan.com'
         self.downloaded_files = []
         self.stored_directory = ''
 
@@ -38,42 +31,38 @@ class MangaPanda:
         '''
         GET:
         + the name of manga
-        + links of all chapters
+        + link of all chapters
         '''
         html_source = requests.get(link).text
         crawl_data = BeautifulSoup(html_source, 'lxml')
         title_text = crawl_data.find('title').text
-        # title_text = 'chap name Manga - Read chap name Online For Free'
-        manga_name = title_text.split('-')[0].replace('Manga', '').strip()
-        # each item in list_chapters
-        # <a href="link">chap name</a>
-        list_chapters = crawl_data.find(id='listing').find_all('a')
+        # title_text = chap name - Truyen tranh online - truyentranhtuan.com
+        manga_name = title_text.split('-')[0].strip()
+        list_chapters = crawl_data.find_all('span', class_='chapter-name')
         num_of_chaps = len(list_chapters)
         print('\n-> Detect\nWeb:', self.hostname, '\nManga: ', manga_name,
               '\nChaps:', num_of_chaps)
         # to store zip file
         self.stored_directory = manga_name.strip()
         # [{'name': .., 'link': ..}, {}, ..]
-        data_list_chapters = list(map(lambda x: dict(name=x.text.strip(),
-                                                     link=self.hostname +
-                                                     x['href']),
-                                      list_chapters))
+        data_list_chapters = list(map(lambda x: dict(name=x.find('a')
+                                                     .text.strip(),
+                                                     link=x.find('a')
+                                                     ['href']), list_chapters))
         return data_list_chapters
 
     def download_image(self, data_chapter):
         '''
         download all images from specific chap
-        after that zip them into a file
+        after that, zip them into a file
         '''
-        print('Name:', data_chapter['name'], '\nLink:', data_chapter['link'])
-        file_zip_name = '-'.join(data_chapter['name'].split())
+        print('Name:', data_chapter['name'], '\nLink:',
+              data_chapter['link'])
+        # chap name -> chap-name
+        file_zip_name = filehandle.FileHandle().filter_file_name(
+            '-'.join(data_chapter['name'].split()))
         html_source = requests.get(data_chapter['link']).text
-        crawl_data = BeautifulSoup(html_source, 'lxml')
-        # each option contains each link of image
-        list_images = crawl_data.find_all('option')
-        list_images = map(lambda x: self.get_link_img(self.hostname +
-                                                      x['value']),
-                          list_images)
+        list_images = self.get_link_slides_page_url_path(html_source)
         print('{}\nDownloading...'.format('-' * 50))
         # store all downloaded file names to zip
         downloaded_file_names = []
@@ -89,7 +78,7 @@ class MangaPanda:
             # avoid some trash in url
             # something like .jpg%blablabla
             file_extension = file_extension.split('%')[0].rstrip()
-            if file_extension.lower() not in ('.jpg', '.png', '.jpeg'):
+            if file_extension.lower() not in ('.jpg', '.png', '.jpeg.'):
                 continue
             file_name = file_zip_name + '-' + str(num) + file_extension
             # filehandle.download_file object returns file_name
@@ -118,20 +107,25 @@ class MangaPanda:
         file_process = other_files + downloaded_file_names
         print('Zipping...')
         self.downloaded_files.append(object_file_handle.zip_files(
-            file_process, file_zip_name + 'mangapanda.com.zip'))
+            file_process, file_zip_name + 'truyentranhtuan.com.zip'))
         object_file_handle.delete_files(file_process)
         print('Done.')
 
     @staticmethod
-    def get_link_img(link):
+    def get_link_slides_page_url_path(html_source):
         '''
-        get link img
-        I have to code this
-        because, each url
-        contains each img.
-        1 url not contains all of images like other websites
+        this page use js variable to hold all of link image
+        so we have to this content follow by string
+        and handle it.
+        It likes this
+        var slides_page_url_path = ["link", "link"];
+        Let's see what I do ;)
         '''
-        html_source = requests.get(link).text
-        crawl_data = BeautifulSoup(html_source, 'lxml')
-        img = crawl_data.find('img', id='img')['src']
-        return img
+        regex_get_string = r'var slides_page_url_path.+;'
+        long_string_link = re.search(regex_get_string, html_source).group()
+        regex_get_string_link = r'".+"'
+        short_string_link = re.search(regex_get_string_link,
+                                      long_string_link).group()
+        list_links = list(map(lambda x: x.strip('"'),
+                              short_string_link.split(',')))
+        return list_links

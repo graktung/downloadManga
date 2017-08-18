@@ -12,12 +12,6 @@ import importlib
 from time import sleep
 from os import system, mkdir, rename
 
-# update path for importing modules in websites folder
-import sys
-# let them as same as linux, unix ope if using windows.
-CURRENT_PATH_OF_SCRIPT = sys.path[0].replace('\\', '/')
-sys.path.append(CURRENT_PATH_OF_SCRIPT + '/websites')
-
 SUPPORT_WEBSITES_DOWNLOAD = [
     {'domain': 'http://blogtruyen.com/',
      'module': 'blogtruyen', 'class': 'BlogTruyen'},
@@ -87,7 +81,7 @@ class Main:
         '''
         for site in SUPPORT_WEBSITES_DOWNLOAD:
             if site['domain'] in link:
-                module = importlib.import_module(site['module'])
+                module = importlib.import_module('downloadManga.' + site['module'])
                 class_ = getattr(module, site['class'])
                 object_of_class = class_()
                 self.get_and_down(object_of_class, link)
@@ -123,7 +117,7 @@ class Main:
                                      args=(small_data,)).start()
                 # if there's not only main thread
                 while threading.active_count() != 1:
-                    sleep(0.0001)
+                    sleep(0.5)
         # notification done
         print('\a')
         # if we downloaded more than 1 chaps
@@ -208,7 +202,7 @@ class Main:
         '''
         for site in SUPPORT_WEBSITES_DOWNLOAD:
             if site['domain'] in link:
-                module = importlib.import_module(site['module'])
+                module = importlib.import_module('downloadManga.' + site['module'])
                 class_ = getattr(module, site['class'])
                 object_of_class = class_()
                 object_of_class.download_image({'name': 'Khong biet ten',
@@ -238,12 +232,12 @@ class Main:
             # make file to next read
             try:
                 with open('database/configthreading.txt', 'w') as written_file:
-                    written_file.write('1')
+                    written_file.write('2')
             # if folder does not exist
             except FileNotFoundError:
                 mkdir('database')
                 with open('database/configthreading.txt', 'w') as written_file:
-                    written_file.write('1')
+                    written_file.write('2')
             num_of_threads = 1
         return num_of_threads
 

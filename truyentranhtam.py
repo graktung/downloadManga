@@ -1,16 +1,8 @@
-'''
-you may get error when run directly this file
-so I update path for import filehandle
-'''
+import inspect
 import sys
-if __name__ == '__main__':
-    PATH_PARENT = '/'.join(sys.path[0].replace('\\', '/').split('/')[:-1])
-    sys.path.append(PATH_PARENT)
-else:
-    PATH_PARENT = '/'.join(sys.path[0].replace('\\', '/').split('/'))
-    sys.path.append(PATH_PARENT)
-# if you confuse how it works, contact me
-# Twitter: https://twitter.com/thanhtrung2314
+import os
+PATH_PARENT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+sys.path.append(PATH_PARENT)
 '''
 - re to find eval string in HTML source
 - filehandle to download and zip files
@@ -19,11 +11,10 @@ else:
 - beautify to decode eval javascript string
 '''
 import re
-import filehandle
 import requests
+import filehandle
 from bs4 import BeautifulSoup
 from jsbeautifier import beautify
-
 
 class TruyenTranhTam:
     '''
@@ -76,7 +67,7 @@ class TruyenTranhTam:
         print('Name:', data_chapter['name'], '\nLink:', data_chapter['link'])
         # chap name -> chap-name
         # go to line 199 for more information
-        file_zip_name = self.filter_file_name(
+        file_zip_name = filehandle.FileHandle().filter_file_name(
             '-'.join(data_chapter['name'].split()))
         html_source = requests.get(data_chapter['link']).text
         list_link_images = self.sort_link(self.get_link_by_regex(
@@ -158,16 +149,6 @@ class TruyenTranhTam:
         to read this docs string
         '''
         return sorted(set(list_links), key=self.get_num_in_link)
-
-    @staticmethod
-    def filter_file_name(file_name):
-        '''
-        file name may contain some chars like : <, >, :, /, |, ..
-        '''
-        regex_filter = r'[^<>:/\\|?*]+'
-        match_filter = re.findall(regex_filter, file_name)
-        file_name = '-'.join(match_filter)
-        return file_name
 
     @staticmethod
     def get_eval_string(html_source):
