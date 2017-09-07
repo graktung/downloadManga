@@ -81,7 +81,7 @@ class Main:
         '''
         for site in SUPPORT_WEBSITES_DOWNLOAD:
             if site['domain'] in link:
-                module = importlib.import_module('downloadManga.' + site['module'])
+                module = importlib.import_module(site['module'])
                 class_ = getattr(module, site['class'])
                 object_of_class = class_()
                 self.get_and_down(object_of_class, link)
