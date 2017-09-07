@@ -202,7 +202,7 @@ class Main:
         '''
         for site in SUPPORT_WEBSITES_DOWNLOAD:
             if site['domain'] in link:
-                module = importlib.import_module('downloadManga.' + site['module'])
+                module = importlib.import_module(site['module'])
                 class_ = getattr(module, site['class'])
                 object_of_class = class_()
                 object_of_class.download_image({'name': 'Khong biet ten',
